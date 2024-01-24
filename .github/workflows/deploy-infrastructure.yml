@@ -19,7 +19,7 @@ env:
   ACR_NAME: contosotradersacr
   AKS_CLUSTER_NAME: contoso-traders-aks
   AKS_DNS_LABEL: contoso-traders-products
-  AKS_NODES_RESOURCE_GROUP_NAME: contoso-traders-aks-nodes-rg
+  AKS_NODES_RESOURCE_GROUP_NAME: contoso-traders-aks-nodes-rg-1205124
   AKS_SECRET_NAME_ACR_PASSWORD: contoso-traders-acr-password
   AKS_SECRET_NAME_KV_ENDPOINT: contoso-traders-kv-endpoint
   AKS_SECRET_NAME_MI_CLIENTID: contoso-traders-mi-clientid
@@ -53,12 +53,6 @@ jobs:
         with:
           creds: ${{ secrets.SERVICEPRINCIPAL }}
       # Add the logged-in service principal to the key vault access policy
-      - name: add service principal to kv access policy
-        uses: azure/CLI@v1
-        with:
-          failOnStderr: false
-          inlineScript: az keyvault set-policy -n ${{ env.KV_NAME }}${{ secrets.ENVIRONMENT }} --secret-permissions get list set --object-id $(az ad sp show --id $(az account show --query "user.name" -o tsv) --query "id" -o tsv)
-      # The AKS agent pool needs to be assigned the user-assigned managed identity created (which has kv access)
       - name: assign user-assigned managed-identity to aks agentpool
         uses: azure/CLI@v1
         with:
