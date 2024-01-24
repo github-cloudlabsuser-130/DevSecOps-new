@@ -81,11 +81,13 @@ jobs:
       - name: add service principal to kv access policy
         uses: azure/CLI@v1
         with:
+          failOnStderr: false
           inlineScript: az keyvault set-policy -n ${{ env.KV_NAME }}${{ secrets.ENVIRONMENT }} --secret-permissions get list set --object-id $(az ad sp show --id $(az account show --query "user.name" -o tsv) --query "id" -o tsv)
       # The AKS agent pool needs to be assigned the user-assigned managed identity created (which has kv access)
       - name: assign user-assigned managed-identity to aks agentpool
         uses: azure/CLI@v1
         with:
+          failOnStderr: false
           inlineScript: |
             az vmss identity assign \
               --identities $(az identity show -g ${{ env.RESOURCE_GROUP_NAME }} --name ${{ env.USER_ASSIGNED_MANAGED_IDENTITY_NAME }}${{ secrets.ENVIRONMENT }} --query "id" -o tsv) \
@@ -99,10 +101,12 @@ jobs:
       - name: seed product image (product details)
         uses: azure/CLI@v1
         with:
+          failOnStderr: false
           inlineScript: az storage blob sync --account-name '${{ env.PRODUCT_IMAGES_STORAGE_ACCOUNT_NAME }}${{ secrets.ENVIRONMENT }}' -c '${{ env.PRODUCT_DETAILS_CONTAINER_NAME }}' -s 'src/ContosoTraders.Api.Images/product-details'
       - name: seed product image (product list)
         uses: azure/CLI@v1
         with:
+          failOnStderr: false
           inlineScript: az storage blob sync --account-name '${{ env.PRODUCT_IMAGES_STORAGE_ACCOUNT_NAME }}${{ secrets.ENVIRONMENT }}' -c '${{ env.PRODUCT_LIST_CONTAINER_NAME }}' -s 'src/ContosoTraders.Api.Images/product-list'
       - name: purge CDN endpoint
         uses: azure/CLI@v1
