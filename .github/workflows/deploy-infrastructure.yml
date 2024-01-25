@@ -60,6 +60,7 @@ jobs:
       - name: create resource group
         uses: Azure/arm-deploy@v1
         with:
+          failOnStderr: false
           scope: subscription
           region: ${{ env.SUB_DEPLOYMENT_REGION }}
           template: ./iac/createResourceGroup.bicep
@@ -72,6 +73,7 @@ jobs:
       - name: create resources
         uses: Azure/arm-deploy@v1
         with:
+          failOnStderr: false
           scope: resourcegroup
           region: ${{ env.SUB_DEPLOYMENT_REGION }}
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
